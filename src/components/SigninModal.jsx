@@ -26,52 +26,49 @@ const TextInput = memo(({ id, label, value, onChange, type = 'text', placeholder
 const SignInModal = memo(({ isOpen, onClose, onSignIn }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [subscribe, setSubscribe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setError('');
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
-      return;
+const handleSubmit = useCallback(async (e) => {
+  e.preventDefault();
+  setError('');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  if (!emailRegex.test(email)) {
+    setError('Please enter a valid email address.');
+    return;
+  }
+
+  setIsSubmitting(true);
+  Cookies.set('user', JSON.stringify({ name, email }), { expires: 365 });
+
+  const sheetURL = 'https://script.google.com/macros/s/AKfycbyuXbixSl4nOE_QAOOyKGZ0oJt3ghptZtcdMz8xyo2U5pytwNNU45fWrT5BCp7CJbN-ZA/exec';
+  const body = `Name=${encodeURIComponent(name)}&Email=${encodeURIComponent(email)}`;
+  console.log(body);
+
+  try {
+    const response = await fetch(sheetURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to submit data to Google Sheet.');
     }
 
-    setIsSubmitting(true);
-    Cookies.set('user', JSON.stringify({ name, email }), { expires: 7 });
+    console.log("Successfully submitted to Google Sheet");
+  } catch (err) {
+    setError(err.message);
+    console.error("Submission Error:", err);
+  } finally {
+    setIsSubmitting(false);
     onSignIn({ name, email });
     onClose();
+  }
+}, [name, email, onSignIn, onClose]);
 
-    if (subscribe) {
-      const sheetURL = 'https://script.google.com/macros/s/AKfycbyuXbixSl4nOE_QAOOyKGZ0oJt3ghptZtcdMz8xyo2U5pytwNNU45fWrT5BCp7CJbN-ZA/exec';
-      const body = `Name=${encodeURIComponent(name)}&Email=${encodeURIComponent(email)}`;
-      console.log(body);
-
-      try {
-        const response = await fetch(sheetURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body,
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to subscribe to the newsletter.');
-        }
-
-        console.log("Successfully subscribed to Google Sheet");
-      } catch (err) {
-        setError(err.message);
-        console.error("Subscription Error:", err);
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
-      setIsSubmitting(false);
-    }
-  }, [name, email, subscribe, onSignIn, onClose]);
 
   const handleCancel = useCallback((e) => {
     e.preventDefault();
@@ -95,10 +92,6 @@ const SignInModal = memo(({ isOpen, onClose, onSignIn }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <TextInput id="name" label="Name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" />
           <TextInput id="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" type="email" />
-          {/* <div className="flex items-center space-x-2">
-            <input id="subscribe" type="checkbox" checked={subscribe} onChange={(e) => setSubscribe(e.target.checked)} className="h-4 w-4" />
-            <Label htmlFor="subscribe" className="text-sm">Subscribe to newsletter</Label>
-          </div> */}
 
           {error && <div className="text-red-500">{error}</div>}
           <AlertDialogFooter>

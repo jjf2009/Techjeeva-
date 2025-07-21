@@ -173,7 +173,7 @@ const SchemeCard = memo(({ scheme }) => {
             {scheme.fundingType && (
               <div className="flex items-center gap-1.5">
                 <DollarSign size={14} className="text-emerald-600 flex-shrink-0" />
-                <p className="font-semibold text-gray-800">{scheme.fundingType} Funding</p>
+                <p className="font-semibold text-gray-800">{scheme.fundingType}</p>
               </div>
             )}
           </div>

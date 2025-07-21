@@ -9,6 +9,7 @@ import { AlertCircle, Filter, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion } from "framer-motion";
 import useDebounce from "@/hooks/useDebounce";
+import NotifyChecker from "@/components/NotifyChecker";
 
 // Lazy load SchemeCard for better initial loading performance
 const SchemeCard = lazy(() => import("./SchemeCard"));
@@ -16,12 +17,6 @@ const SchemeCard = lazy(() => import("./SchemeCard"));
 // Constants
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1kiCFeQNcNGhn3MMlsKdg8EhDi4Qbamuy2NKPentn37a3L85gvJkABfAnlPYi-8IdVuEg7Pbi58-F/pub?output=csv";
 
-/**
- * Schemes Component - Displays and filters funding schemes
- * 
- * This component fetches scheme data from a CSV, processes it,
- * and provides filtering capabilities through URL parameters.
- */
 const Schemes = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [allSchemes, setAllSchemes] = useState([]);
@@ -62,7 +57,7 @@ const Schemes = () => {
       support: data["Grant/Support"] || "Not specified",
       deadline: data["Deadline"] || null,
       applyLink: data["Link"] || "#",
-      fundingType: data["Funding Type"] || "Not specified",
+      fundingType: data["Funding Type"] || "Not specified Funding Type",
       status,
     };
   }, []);
@@ -73,7 +68,7 @@ const Schemes = () => {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    
+    <NotifyChecker/>
     const fetchSchemes = async () => {
       setLoading(true);
       setError(null);
