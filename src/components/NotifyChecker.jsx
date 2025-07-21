@@ -9,7 +9,7 @@ const EMAILJS_USER_ID = "RQN5ddiHNl8dcaskq";
 
 const notifySheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1kiCFeQNcNGhn3MMlsKdg8EhDi4Qbamuy2NKPentn37a3L85gvJkABfAnlPYi-8IdVuEg7Pbi58-F/pub?gid=508183757&single=true&output=csv";
 
-const schemesSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1kiCFeQNcNGhn3MMlsKdg8EhDi4Qbamuy2NKPentn37a3L85gvJkABfAnlPYi-8IdVuEg7Pbi58-F/pub?gid=0&single=true&output=csv";
+const schemesSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1kiCFeQNcNGhn3MMlsKdg8EhDi4Qbamuy2NKPentn37a3L85gvJkABfAnlPYi-8IdVuEg7Pbi58-F/pub?gid=0&single=true&output=csv&gid=508183757";
 
 export default function NotifyChecker() {
   const [status, setStatus] = useState("Idle");
